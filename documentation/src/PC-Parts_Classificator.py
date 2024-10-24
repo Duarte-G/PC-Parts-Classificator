@@ -5,7 +5,10 @@ import os
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout, RandomFlip, RandomRotation, RandomZoom, GlobalAveragePooling2D
+from tensorflow.keras.applications import MobileNetV2
+from tensorflow.keras.applications import VGG16
+from tensorflow.keras.callbacks import EarlyStopping
 
 # Path to the current script folder
 current_dir = os.path.dirname(__file__)
@@ -34,16 +37,24 @@ val_ds = tf.keras.utils.image_dataset_from_directory(
     seed=123 # ensure that separation is consistent
 )
 
+#base_model = MobileNetV2(input_shape=(256, 256, 3), include_top=False, weights='imagenet')
+#base_model.trainable = False  # Congela os pesos da base
+
+# Carregar o modelo VGG16 pré-treinado, sem a camada final (include_top=False)
+base_model = VGG16(input_shape=(256, 256, 3), include_top=False, weights='imagenet')
+# Congela os pesos das camadas da base VGG16 para não serem treinadas novamente
+base_model.trainable = False
+
+early_stopping = EarlyStopping(monitor='val_accuracy', patience=5, restore_best_weights=True)
+
+
 # Basic CNN
 model = Sequential([
-    Conv2D(32, kernel_size=(3,3), activation='relu', input_shape=(256,256,3)),
-    MaxPooling2D(),
-    Conv2D(32, kernel_size=(3,3), activation='relu'),
-    MaxPooling2D(),
-    Flatten(),
+    base_model,
+    GlobalAveragePooling2D(),
     Dense(128, activation='relu'),
     Dense(64, activation='relu'),
-    Dense(14, activation='softmax'), # 2 classes (CPU and GPU)
+    Dense(10, activation='softmax'), # 10 classes (folders)
 ])
 
 # Compiling the model
@@ -53,10 +64,11 @@ model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=
 history = model.fit(train_ds, # training data
                     validation_data=val_ds,
                     epochs = 20,
-                    verbose=1)
+                    verbose=1,
+                    callbacks=[early_stopping])
 
 # Saving the model
-model.save('pc_parts_classification_model.h5')
+model.save('pc_parts_classification_model.keras')
 
 # Evaluating the model on validation data
 val_loss, val_acc = model.evaluate(val_ds)

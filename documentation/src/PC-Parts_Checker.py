@@ -138,53 +138,85 @@ class PCPartsChecker:
         self.save_current_state()
         return "Build sucessfully reset!"
 
-def select_image_file():
-    root = tk.Tk()
-    root.withdraw() # Hides the main Tkinter window
-    root.attributes('-topmost', True)
-    file_path = filedialog.askopenfilename(
-        parent=root,
-        title="Select an image",
-        filetypes=[("Image", "*.png *.jpg *.jpeg")]
-    )
-    root.destroy()  # Closes the Tkinter instance after selection
-    return file_path
+class PCPartsGUI:
+    def __init__(self):
+        self.checker = PCPartsChecker()
+        self.setup_gui()
 
-def main_menu(checker):
-    while True:
-        print("\nChoose an option:")
-        print("1 - Add a component")
-        print("2 - Check missing components")
-        print("3 - Reset build")
-        print("4 - Exit")
+    def setup_gui(self):
+        self.root = tk.Tk()
+        self.root.title("PC-Parts Verificator")
+        self.root.geometry("800x600")
+        self.root.configure(bg="#f0f0f0")
 
-        choice = input("Option: ")
-        if choice == '1':
-            file_path = select_image_file() # Calls the function to select the file
-            if file_path:
-                result = checker.add_component(file_path)
-                print(result['message'])
-            else:
-                print("No files have been selected.")
-        elif choice == '2':
-            missing_info = checker.get_missing_components()
-            if missing_info['is_complete']:
-                print("Build is complete!")
-            else:
-                print("Missing components:")
-                for comp in missing_info['missing']:
-                    print(f"- {comp['name']}: {comp['description']}")
-                print("Optional components:")
-                for comp in missing_info['optional']:
-                    print(f"- {comp['name']}: {comp['description']}")
-        elif choice == '3':
-            print(checker.reset_build())
-        elif choice == '4':
-            print("Exiting...")
-            break
+        # Main frame with background style
+        main_frame = tk.Frame(self.root, padx=20, pady=20, bg="#f0f0f0")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Button Style
+        button_style = {"font": ("Arial", 12, "bold"), "bg": "#4CAF50", "fg": "white", "relief": "groove", "bd": 3, "width": 25}
+        tk.Button(main_frame, text="Adicionar Componente", command=self.add_component, **button_style).pack(pady=10)
+        tk.Button(main_frame, text="Verificar Componentes Faltantes", command=self.check_missing, **button_style).pack(pady=10)
+        tk.Button(main_frame, text="Resetar Build", command=self.reset_build, **button_style).pack(pady=10)
+
+        # Frame for list of components with border
+        self.components_frame = tk.LabelFrame(main_frame, text="Componentes Adicionados", padx=10, pady=10, bg="#ffffff", font=("Arial", 12, "bold"), fg="#333")
+        self.components_frame.pack(fill=tk.BOTH, expand=True, pady=20)
+        
+        # Update components list
+        self.update_components_list()
+
+    def add_component(self):
+        file_path = filedialog.askopenfilename(
+            filetypes=[("Images", "*.jpg *.jpeg")]
+        )
+        if file_path:
+            result = self.checker.add_component(file_path)
+            messagebox.showinfo("Results", result['message'])
+            self.update_components_list()
+
+    def check_missing(self):
+        result = self.checker.get_missing_components()
+        
+        message = "Build status:\n\n"
+        
+        if result['is_complete']:
+            message += "✅ Your build is complete with all the necessary components!\n\n"
         else:
-            print("Invalid option, try again.")
+            message += "❌ Some necessary components are still missing:\n\n"
+        
+        if result['missing']:
+            message += "Necessary components missing:\n"
+            for comp in result['missing']:
+                message += f"- {comp['name']}: {comp['description']}\n"
+            message += "\n"
+        
+        if result['optional']:
+            message += "Optional components you can add:\n"
+            for comp in result['optional']:
+                message += f"- {comp['name']}: {comp['description']}\n"
+        
+        messagebox.showinfo("Missing components", message)
+
+    def reset_build(self):
+        if messagebox.askyesno("Confirm Reset", "Are you sure you want to reset the current build?"):
+            message = self.checker.reset_build()
+            messagebox.showinfo("Reset", message)
+            self.update_components_list()
+
+    def update_components_list(self):
+        # Clear current list
+        for widget in self.components_frame.winfo_children():
+            widget.destroy()
+
+        # List added components
+        for component in self.checker.added_components:
+            name = self.checker.required_components[component]['name']
+            tk.Label(self.components_frame, text=f"✓ {name}", font=("Arial", 10), bg="#ffffff", fg="#333").pack(anchor='w', padx=5, pady=2)
+
+    def run(self):
+        self.root.mainloop()
 
 if __name__ == "__main__":
-    checker = PCPartsChecker()
-    main_menu(checker)
+    app = PCPartsGUI()
+    app.run()

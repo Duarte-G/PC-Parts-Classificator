@@ -140,7 +140,7 @@ history = model.fit(
 )
 
 # Saving the model
-model.save('ResNet50V2_model.keras')
+model.save('WITH_SSD_ResNet50V2_model.keras')
 
 # Plotting training history
 plt.figure(figsize=(15, 5))

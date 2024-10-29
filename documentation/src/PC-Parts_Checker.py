@@ -8,7 +8,7 @@ from pathlib import Path
 import json
 
 class PCPartsChecker:
-    def __init__(self, model_path='ResNet50V2_model.keras'):
+    def __init__(self, model_path='PC-Parts_Classificator_model.keras'):
         # Path to the current script folder
         current_dir = os.path.dirname(__file__)
         full_model_path = os.path.join(current_dir, model_path)

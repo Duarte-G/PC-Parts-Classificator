@@ -9,8 +9,11 @@ import json
 
 class PCPartsChecker:
     def __init__(self, model_path='ResNet50V2_model.keras'):
+        # Path to the current script folder
+        current_dir = os.path.dirname(__file__)
+        full_model_path = os.path.join(current_dir, model_path)
         # Load the trained model
-        self.model = tf.keras.models.load_model(model_path)
+        self.model = tf.keras.models.load_model(full_model_path)
         self.img_size = 224
 
         #  Components needed to build a PC
@@ -130,10 +133,10 @@ class PCPartsChecker:
                 self.added_components = set(state['components'])
 
     def reset_build(self):
-        """Reseta a build atual"""
+        # Reset build
         self.added_components.clear()
         for file in self.save_dir.glob('*.*'):
-            if file.name != '.gitkeep':  # Preservar arquivo .gitkeep se existir
+            if file.name != '.gitkeep': # Maintain gitkeep file
                 file.unlink()
         self.save_current_state()
         return "Build sucessfully reset!"
@@ -149,22 +152,31 @@ class PCPartsGUI:
         self.root.geometry("800x600")
         self.root.configure(bg="#f0f0f0")
 
+        # Closing protocol
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
         # Main frame with background style
         main_frame = tk.Frame(self.root, padx=20, pady=20, bg="#f0f0f0")
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Button Style
         button_style = {"font": ("Arial", 12, "bold"), "bg": "#4CAF50", "fg": "white", "relief": "groove", "bd": 3, "width": 25}
-        tk.Button(main_frame, text="Adicionar Componente", command=self.add_component, **button_style).pack(pady=10)
-        tk.Button(main_frame, text="Verificar Componentes Faltantes", command=self.check_missing, **button_style).pack(pady=10)
-        tk.Button(main_frame, text="Resetar Build", command=self.reset_build, **button_style).pack(pady=10)
+        tk.Button(main_frame, text="Add component", command=self.add_component, **button_style).pack(pady=10)
+        tk.Button(main_frame, text="Check for missing components", command=self.check_missing, **button_style).pack(pady=10)
+        tk.Button(main_frame, text="Reset Build", command=self.reset_build, **button_style).pack(pady=10)
 
         # Frame for list of components with border
-        self.components_frame = tk.LabelFrame(main_frame, text="Componentes Adicionados", padx=10, pady=10, bg="#ffffff", font=("Arial", 12, "bold"), fg="#333")
+        self.components_frame = tk.LabelFrame(main_frame, text="Added components", padx=10, pady=10, bg="#ffffff", font=("Arial", 12, "bold"), fg="#333")
         self.components_frame.pack(fill=tk.BOTH, expand=True, pady=20)
         
         # Update components list
         self.update_components_list()
+
+    def on_closing(self):
+        # Called when the window is closed
+        if messagebox.askyesno("Confirm exit", "Do you want to reset the build before you leave?"):
+            self.checker.reset_build()
+        self.root.destroy()
 
     def add_component(self):
         file_path = filedialog.askopenfilename(

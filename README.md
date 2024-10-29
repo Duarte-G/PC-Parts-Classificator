@@ -2,7 +2,7 @@
 
 This project classifies various computer components using a ResNet50V2 model, achieving 90% accuracy. The model identifies components like CPU, GPU, motherboard, HDD, RAM, and more.
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a158b5d7-dc6d-418b-94a7-46736aec3ef5">
+  <img src="https://github.com/user-attachments/assets/4e2bc8d6-b414-4ee3-9bce-3c3f75876bb4">
 </p>
 
 ## About the Project

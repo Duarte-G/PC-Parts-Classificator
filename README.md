@@ -17,6 +17,7 @@ This project aims to classify images of computer parts. The model is currently t
 - Monitor
 - Mouse
 - Keyboard
+
 The approach involves a convolutional neural network (ResNet50V2) fine-tuned with data augmentation techniques to improve robustness and accuracy.
 
 ## Technologies Used

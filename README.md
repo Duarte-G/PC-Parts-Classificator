@@ -27,12 +27,10 @@ The approach involves a convolutional neural network (ResNet50V2) fine-tuned wit
 - Framework: TensorFlow / Keras
 
 ## Sample Results
-### Accuracy
-The model achieves 90% accuracy on the test set.
 
 ### Confusion Matrix
 Below is a sample confusion matrix for the classifications:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/dd0845ae-e385-4fbc-8820-6ec1d99f09f3">
+  <img src="https://github.com/user-attachments/assets/8c45ea01-5478-408f-bbb7-2972d47daa06">
 </p>
 

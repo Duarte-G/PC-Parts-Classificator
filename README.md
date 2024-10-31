@@ -51,7 +51,7 @@ python train_model/Resize_images.py
 ```
 Then, retrain the model to incorporate the new data.
 ```python
-python PC-Parts_Classificator.py
+python train_model/PC-Parts_Classificator.py
 ```
 #### 3. Test the Updated Model
 Finally, evaluate the new model’s performance on your test set or with real images:

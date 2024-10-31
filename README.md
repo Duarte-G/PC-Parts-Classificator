@@ -12,7 +12,10 @@ Follow these steps to run the program on your own machine:
 ```python
 git clone https://github.com/Duarte-G/PC-Parts-Classificator.git
 cd PC-Parts-Classificator
+cd documentation
+cd src
 ```
+
 #### 2. Install Required Packages: Make sure you have Python 3.7 or later, and install the dependencies.
 ```python
 pip install -r requirements.txt

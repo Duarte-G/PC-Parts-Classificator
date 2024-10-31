@@ -65,7 +65,7 @@ This project aims to classify images of computer parts. The model is currently t
 - GPU
 - Motherboard
 - Computer Case
-- HDD
+- HDD/SSD
 - RAM
 - Headset
 - Monitor

@@ -34,3 +34,19 @@ Below is a sample confusion matrix for the classifications:
   <img src="https://github.com/user-attachments/assets/8c45ea01-5478-408f-bbb7-2972d47daa06">
 </p>
 
+## Model and Classfication Overview
+The classification model for this project is built on a ResNet50V2 architecture, a great CNN for image recognition tasks. It was very useful for distinguishing visually similar computer components, such as GPUs, motherboards, and RAM.
+
+### Data Augmentation
+To enhance model robustness, data augmentation techniques were used during training, including:
+- Horizontal Flipping
+- Small Rotations (10%)
+- Zoom Adjustments (10%)
+- Minor Translations (10%)
+These augmentations contributed to the model's performance in recognizing components across a range of real-world image variations.
+
+## Future Improvements
+Some potential improvements, such as:
+- Expanding the dataset to include additional components.
+- Adding more comprehensive error handling for diverse image quality or backgrounds.
+

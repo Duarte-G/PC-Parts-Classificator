@@ -109,4 +109,5 @@ These augmentations contributed to the model's performance in recognizing compon
 Some potential improvements, such as:
 - Expanding the dataset to include additional components.
 - Adding more comprehensive error handling for diverse image quality or backgrounds.
+- Allowing users to specify the exact model of each component, enabling compatibility checks between the motherboard, processor, and RAM, thus providing a more complete experience in computer assembly.
 
